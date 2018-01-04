@@ -1,0 +1,60 @@
+<head>
+    <script>
+        window.onload = function () { load() }
+
+        function load() {
+            execute();
+
+            //check validation every 5 seconds
+            setInterval(function () {
+              execute();
+            }, 5000);
+        }
+
+        function execute() {
+            console.log('Last time checked: ' + new Date(new Date().getTime()));
+
+            var actual_JSON = httpGet("json", function (response) {
+                var actual_JSON = JSON.parse(response);
+                console.log(actual_JSON);
+
+                var seedString = "<p>SEED:<br/>" +
+                    actual_JSON['userSeed'] +
+                    "</p>";
+                var grantedString = "<p>ACCESS GRANTED:<br/>" +
+                    actual_JSON["accessGranted"] +
+                    "</p>";
+
+                document.getElementById("userSeed").innerHTML = seedString;
+                document.getElementById("accessGranted").innerHTML = grantedString;
+            });
+
+        };
+
+        function httpGet(file, callback) {
+
+            var xobj = new XMLHttpRequest();
+            xobj.open('GET', file + "?_=" + new Date().getTime(), true); // Replace 'my_data' with the path to your file
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4 && xobj.status == "200") {
+                    // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+                    callback(xobj.responseText);
+                }
+            };
+            xobj.send(null);
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <div id='userSeed'></div>
+    <div id='accessGranted'></div>
+
+    <p>Click this button to start a recurring check for new addresses and automatically attach a new address to the seed. The
+        server will check every few seconds for a given amount of time.
+        <br/>
+        <button onclick="httpGet('generate', function(response) {})">Generate/attach new adress</button>
+    </p>
+</body>

@@ -1,0 +1,23 @@
+environment:
+  matrix:
+    - nodejs_version: "8"
+
+platform:
+  - x86
+  - x64
+
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  # install modules
+  - npm install
+
+# Post-install test scripts.
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  # run tests
+  - npm test
+
+build: off
