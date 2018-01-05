@@ -45,32 +45,37 @@ http.createServer(function (req, res) {
     if (req.url.startsWith('/generate')) {
         res.end("");
         // no code -> reloads the seeds data and checks for a new address
-        //check validation every 5 seconds
-        var timewaited = 30;
+        //check validation every X seconds
+        var intervalSeconds = 30;
+        var timewaited = 0;
         var interval = setInterval(function () {
+            timewaited += intervalSeconds;
+
             if (minutesToWait * 60 <= timewaited) {
                 manageAccess('No new adress for ' + minutesToWait + ' minutes. Terminating.');
                 console.log('No new adress for ' + minutesToWait + ' minutes. Terminating.');
                 clearInterval(interval);
             }
 
-            timewaited += 30;
-
             // Update the elapsed time
             console.log("Time waited: " + timewaited + "/" + minutesToWait * 60);
             
-            //let isValid = await 
+            // check if transaction/new address was recognized
             iotaAuth.isTransactionValid().then(isValid => {
-                console.log("Is valid: " + isValid);
+                console.log("2FA is valid: " + isValid);
 
                 // allow access
                 if (isValid) {
                     clearInterval(interval);
-                    manageAccess('true');
+                    manageAccess('Granted!');
+                } else {
+                    manageAccess('Not yet confirmed.');
                 }
                 
+            }).catch(error => {
+                console.log("Error in isTransactionValid:\n" + error);
             });
-        }, 30000);
+        }, 30 * 1000);
 
         return;
     }
