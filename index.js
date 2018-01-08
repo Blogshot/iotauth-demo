@@ -8,7 +8,7 @@ const demo_values = require('./demo-values.json');
 */
 
 // function to write access status to database (currently json)
-function manageAccess(status) {
+function changeStatus(status) {
   demo_values.accessGranted = status;
 
   fs.writeFile('./demo-values.json', JSON.stringify(demo_values, null, 2), function (err) {
@@ -21,7 +21,7 @@ function handleButtonPress() {
   var minutesToWait = demo_values.minutesToWait
 
   // set waiting status in GUI
-  manageAccess('Not yet confirmed')
+  changeStatus('Not yet confirmed')
 
   // initialize IotAuth-module
   const IotAuth = require('iota-auth').IotAuth;
@@ -37,7 +37,7 @@ function handleButtonPress() {
     timewaited += intervalSeconds;
 
     if (minutesToWait * 60 <= timewaited) {
-      manageAccess('Access denied<br/>(No confirmation for ' + minutesToWait + ' minutes)');
+      changeStatus('Access denied<br/>(No confirmation for ' + minutesToWait + ' minutes)');
       console.log('No new adress for ' + minutesToWait + ' minutes. Terminating.');
       clearInterval(interval);
     }
@@ -54,7 +54,7 @@ function handleButtonPress() {
       // allow access (AKA coloring the button)
       if (isValid) {
         clearInterval(interval);
-        manageAccess('Access granted');
+        changeStatus('Access granted');
       }
 
     }).catch(error => {
@@ -72,7 +72,7 @@ function handleButtonPress() {
 */
 
 // initialize JSON-file with status
-manageAccess('Access not yet requested')
+changeStatus('Access not yet requested')
 
 // create webserver to emulate portal
 var http = require('http');
