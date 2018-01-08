@@ -9,3 +9,7 @@ A simple webinterface to provide a proof-of-work for https://github.com/thedewpo
 The website should change the buttons color and text according to the login status.
 
 TODO: Implement transaction code.
+
+![-](https://raw.githubusercontent.com/Blogshot/iotauth-demo/master/images/red.png)
+![-](https://raw.githubusercontent.com/Blogshot/iotauth-demo/master/images/yellow.png)
+![-](https://raw.githubusercontent.com/Blogshot/iotauth-demo/master/images/green.png)
