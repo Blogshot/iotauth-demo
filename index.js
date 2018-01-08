@@ -17,6 +17,8 @@ function manageAccess(isValid) {
     });
 }
 
+// initialize JSON-file
+manageAccess('Access not yet requested')
 
 // create webserver to emulate portal
 var http = require('http');
@@ -30,20 +32,27 @@ http.createServer(function (req, res) {
 
     console.log(req.url);
 
+    // serve website
     if (req.url.length < 2) {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(fs.readFileSync('index.html'));
         return;
     }
 
+    // database was requested (for prrof of work there is no real DB, just a JSON file)
     if (req.url.startsWith('/json')) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(fs.readFileSync('demo-values.json'));
         return;
     }
 
+    // button was clicked
     if (req.url.startsWith('/generate')) {
         res.end("");
+
+        // set waiting status in GUI
+        manageAccess('Not yet confirmed')
+
         // no code -> reloads the seeds data and checks for a new address
         //check validation every X seconds
         var intervalSeconds = 30;
@@ -52,7 +61,7 @@ http.createServer(function (req, res) {
             timewaited += intervalSeconds;
 
             if (minutesToWait * 60 <= timewaited) {
-                manageAccess('No new adress for ' + minutesToWait + ' minutes. Terminating.');
+                manageAccess('Access denied<br/>(No confirmation for ' + minutesToWait + ' minutes)');
                 console.log('No new adress for ' + minutesToWait + ' minutes. Terminating.');
                 clearInterval(interval);
             }
@@ -67,13 +76,11 @@ http.createServer(function (req, res) {
                 // allow access
                 if (isValid) {
                     clearInterval(interval);
-                    manageAccess('Granted!');
-                } else {
-                    manageAccess('Not yet confirmed.');
+                    manageAccess('Access granted');
                 }
                 
             }).catch(error => {
-                console.log("Error in isTransactionValid:\n" + error);
+                    console.log("Error in isTransactionValid:\n" + error);
             });
         }, 30 * 1000);
 

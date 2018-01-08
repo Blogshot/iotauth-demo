@@ -1,60 +1,81 @@
 <head>
-    <script>
-        window.onload = function () { load() }
+  <script>
+    window.onload = function () { load() }
 
-        function load() {
-            execute();
+    function load() {
+      execute();
 
-            //check validation every 5 seconds
-            setInterval(function () {
-              execute();
-            }, 5000);
+      //check validation every 5 seconds
+      setInterval(function () {
+        execute();
+      }, 5000);
+    }
+
+    function execute() {
+      console.log('Last time checked: ' + new Date(new Date().getTime()));
+
+      var actual_JSON = httpGet("json", function (response) {
+        var actual_JSON = JSON.parse(response);
+        console.log(actual_JSON);
+
+        var seedString = "<center>Seed:<br/>" +
+          actual_JSON['userSeed'] +
+          "</center>";
+        var grantedString = "<div class='access' style='background-color: " +
+          (actual_JSON["accessGranted"] == "Access granted" ?
+            "rgba(75, 255, 75, 0.8)" :
+            actual_JSON["accessGranted"] == "Not yet confirmed" ?
+              "rgba(255, 255, 75, 0.8)" :
+              "rgba(255, 75, 75, 0.8)") +
+          ";' id='accessGranted'>" +
+          actual_JSON["accessGranted"] +
+          "</div>";
+
+        console.log(grantedString);
+
+        document.getElementById("userSeed").innerHTML = seedString;
+        document.getElementById("accessGranted").innerHTML = grantedString;
+      });
+
+    };
+
+    function httpGet(file, callback) {
+
+      var xobj = new XMLHttpRequest();
+      xobj.open('GET', file + "?_=" + new Date().getTime(), true); // Replace 'my_data' with the path to your file
+      xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+          // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+          callback(xobj.responseText);
         }
+      };
+      xobj.send(null);
+    }
 
-        function execute() {
-            console.log('Last time checked: ' + new Date(new Date().getTime()));
+  </script>
 
-            var actual_JSON = httpGet("json", function (response) {
-                var actual_JSON = JSON.parse(response);
-                console.log(actual_JSON);
+  <style>
+    .access {
+      padding: 10px;
+      border-radius: 20px;
+      width: 200px;
+      min-width: 256px;
+      margin: 0 auto;
+      text-align: center;
+    }
+  </style>
 
-                var seedString = "<p>SEED:<br/>" +
-                    actual_JSON['userSeed'] +
-                    "</p>";
-                var grantedString = "<p>ACCESS GRANTED:<br/>" +
-                    actual_JSON["accessGranted"] +
-                    "</p>";
-
-                document.getElementById("userSeed").innerHTML = seedString;
-                document.getElementById("accessGranted").innerHTML = grantedString;
-            });
-
-        };
-
-        function httpGet(file, callback) {
-
-            var xobj = new XMLHttpRequest();
-            xobj.open('GET', file + "?_=" + new Date().getTime(), true); // Replace 'my_data' with the path to your file
-            xobj.onreadystatechange = function () {
-                if (xobj.readyState == 4 && xobj.status == "200") {
-                    // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-                    callback(xobj.responseText);
-                }
-            };
-            xobj.send(null);
-        }
-
-
-    </script>
 </head>
 
-<body>
-    <div id='userSeed'></div>
-    <div id='accessGranted'></div>
-
-    <p>Click this button to start a recurring check for new addresses and automatically attach a new address to the seed. The
-        server will check every few seconds for a given amount of time.
-        <br/>
-        <button onclick="httpGet('generate', function(response) {})">Generate/attach new adress</button>
-    </p>
+<body style='font-family: helvetica;'>
+  <br/>
+  <center id='userSeed'></center>
+  <br/>
+  <center>Click this button to start a recurring check for new addresses and automatically attach a new address to the seed.
+    <br/>The server will check every few seconds for a given amount of time.
+    <br/>
+    <button onclick="httpGet('generate', function(response) {})">Generate/attach new adress</button>
+  </center>
+  <br/>
+  <div class='access' id='accessGranted'></div>
 </body>
