@@ -33,7 +33,7 @@
         }
         
         // update seed dynamically ()
-        document.getElementById("userSeed").innerHTML = "Seed:<br/>" + actual_JSON['userSeed'];
+        document.getElementById("userSeed").innerHTML = "Use the following (public) Seed:<br/>" + actual_JSON['userSeed'];
 
         // set button attributes
         document.getElementById("accessGranted").innerHTML = actual_JSON["accessGranted"];
@@ -80,8 +80,7 @@
   <br/>
   <div id='userSeed'></div>
   <br/>
-  <div>Click this button to start a recurring check for new addresses and automatically attach a new address to the seed.
-    <br/>The server will check every few seconds for a given amount of time.
+  <div>Click this button to start a recurring check for new addresses:
   </div>
   <br/>
   <button id='accessGranted' class='access' onclick='start()' style='background-color: rgba(255, 75, 75, 0.8);'>Access not yet requested</button>
