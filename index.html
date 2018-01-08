@@ -14,9 +14,8 @@
     function execute() {
       console.log('Last time checked: ' + new Date(new Date().getTime()));
 
-      var actual_JSON = httpGet("json", function (response) {
+      httpGet("json", function (response) {
         var actual_JSON = JSON.parse(response);
-        console.log(actual_JSON);
 
         // set color of button based off current status
         switch (actual_JSON["accessGranted"]) {
@@ -31,7 +30,7 @@
             var grantedColor = "rgba(255, 75, 75, 0.8)" // red
             break;
         }
-        
+
         // update seed dynamically ()
         document.getElementById("userSeed").innerHTML = "Use the following (public) Seed:<br/>" + actual_JSON['userSeed'];
 
