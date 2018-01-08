@@ -1,12 +1,5 @@
-const userSeed = require('./demo-values').userSeed;
-const minutesToWait = 5;
 const fs = require('fs');
 const demo_values = require('./demo-values.json');
-
-const IotAuth = require('iota-auth').IotAuth;
-
-//initialize with stored seed and expiration time (minutes)
-var iotaAuth = new IotAuth(userSeed, minutesToWait);
 
 // function to write access status to database (currently json)
 function manageAccess(isValid) {
@@ -17,7 +10,7 @@ function manageAccess(isValid) {
   });
 }
 
-// initialize JSON-file
+// initialize JSON-file with status
 manageAccess('Access not yet requested')
 
 // create webserver to emulate portal
@@ -39,7 +32,7 @@ http.createServer(function (req, res) {
     return;
   }
 
-  // database was requested (for prrof of work there is no real DB, just a JSON file)
+  // database was requested (for proof of work there is no real DB, just a JSON file)
   if (req.url.startsWith('/json')) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(fs.readFileSync('demo-values.json'));
@@ -52,6 +45,12 @@ http.createServer(function (req, res) {
 
     // set waiting status in GUI
     manageAccess('Not yet confirmed')
+
+    // initialize IotAuth-module
+    const IotAuth = require('iota-auth').IotAuth;
+    
+    //initialize with stored seed and expiration time (minutes)
+    var iotaAuth = new IotAuth(demo_values.userSeed, demo_values.minutesToWait);
 
     // no code -> reloads the seeds data and checks for a new address
     //check validation every X seconds

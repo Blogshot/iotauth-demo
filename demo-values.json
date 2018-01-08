@@ -1,4 +1,5 @@
 {
   "userSeed": "PBGRWJXOALEOBXNUPCFUNWXSEXMYC9BVLLK9HMUDXNOETYJHSKBHDR9SWAWJIKVPFSBWNCNSQQJUFUPJM",
-  "accessGranted": "Not yet confirmed."
+  "accessGranted": "Access not yet requested",
+  "minutesToWait": 5
 }
