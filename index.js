@@ -2,8 +2,8 @@ const fs = require('fs');
 const demo_values = require('./demo-values.json');
 
 // function to write access status to database (currently json)
-function manageAccess(isValid) {
-  demo_values.accessGranted = isValid;
+function manageAccess(status) {
+  demo_values.accessGranted = status;
 
   fs.writeFile('./demo-values.json', JSON.stringify(demo_values, null, 2), function (err) {
     if (err) return console.log(err);
